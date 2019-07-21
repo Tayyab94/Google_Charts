@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "Column-Chart";
+
+}
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h3 class="text-center text-justify">Google charts</h3>
+            <p class="justify-content-center">
+                It is a freely available powerful tool for creating charts and easy to implement. It gives many features with different types of chart.
+
+                I am using this Google API
+                src="https://www.gstatic.com/charts/loader.js"
+            </p>
+        </div>
+    </div><div class="row">
+    <div class="col-12">
+        <h2 class="text-secondary text-center">Column Chart</h2>
+        <div id="chart_div">
+
+
+        </div>
+    </div>
+    <div class="col-12">
+        <h2 class="text-capitalize text-center align-text-top">line Chart</h2>
+        <div id="lineChart_div">
+
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <h2 class="text-success text-center">pieChart</h2>
+
+        <div id="pieChart_div">
+
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <h2 class="text-success text-center">Area Chart</h2>
+
+
+        <div id="AreaChart_div">
+
+        </div>
+    </div>
+
+    <div class="col-lg-12">
+        <h2 class="text-success text-center">Bar-Chart</h2>
+
+        <div id="BarChart_div">
+
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    google.charts.load('current', {
+        packages: ['corechart', 'bar']
+    });
+    google.charts.setOnLoadCallback(LoadData);
+
+    function LoadData() {
+        $.ajax({
+
+            url: 'ColumnChart/PopulationChart',
+            dataType: "json",
+            type: "GET",
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                toastr.error(err.message);
+            },
+            success: function (data) {
+                PopulationChart(data);
+                return false;
+            }
+        });
+        return false;
+    }
+
+    function PopulationChart(data) {
+        var dataArray = [
+            ['City', '2020 Population', '2010 Population', '2000 Population', '1990 Population']
+        ];
+        $.each(data, function (i, item) {
+            dataArray.push([item.cityName, item.populationYear2020, item.populationYear2010, item.populationYear2000, item.populationYear1990]);
+        });
+        var data = google.visualization.arrayToDataTable(dataArray);
+        var options = {
+            title: 'Population of Largest Cities of Odisha ',
+            chartArea: {
+                width: '50%'
+            },
+            colors: ['#cfdb4b', '#2dad49', '#ffab91', '#9c3a62'],
+            hAxis: {
+                title: 'City',
+                minValue: 0
+            },
+            vAxis: {
+                title: 'Total Population'
+            }
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+
+
+        var chart1 = new google.visualization.LineChart(document.getElementById('lineChart_div'));
+        chart1.draw(data, options);
+
+
+        var chart_PieChart = new google.visualization.PieChart(document.getElementById('pieChart_div'));
+        chart_PieChart.draw(data, options);
+
+
+        var chart_AreaChart = new google.visualization.AreaChart(document.getElementById('AreaChart_div'));
+        chart_AreaChart.draw(data, options);
+
+
+        var chart_BarChart = new google.visualization.BarChart(document.getElementById('BarChart_div'));
+        chart_BarChart.draw(data, options);
+
+
+        return false;
+    }
+</script>
